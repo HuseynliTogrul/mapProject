@@ -53,3 +53,21 @@ p {
     align-items: center;
     gap: 5px;
 }
+
+#map-content-wrapper {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+.map-container {
+    width: 50%;
+    height: 100vh;
+}
+
+.map-detail {
+    width: 50%;
+    height: 100vh;
+    overflow-y: auto;
+    background-color: #f3f4f6;
+}

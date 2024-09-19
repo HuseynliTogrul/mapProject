@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import MapDetail from "../components/MapDetail";
+// import MapDetail from "../components/MapDetail";
 import App from "../App";
 import MapContent from "../components/MapContent";
 
@@ -12,10 +12,10 @@ export const router = createBrowserRouter([
                 path: '/',
                 element: <MapContent />
             },
-            {
-                path: "/map-detail",
-                element: <MapDetail />
-            },
+            // {
+            //     path: "/map-detail",
+            //     element: <MapDetail />
+            // },
         ]
     },
 ]);
