@@ -1,59 +1,39 @@
 import React, { useEffect, useRef, useState } from "react";
 import { renderToString } from "react-dom/server";
-import { PopupContent } from './PopupContent'
-import { MapContainer, useMap } from "react-leaflet";
+import { PopupContent } from './PopupContent';
+import { MapContainer } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import MapLayer from './MapLayer';
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCountryContent } from "../redux/slices/restCountrySlice";
-import { IoExitOutline } from "react-icons/io5";
-import { Link } from "react-router-dom"
 import { fetchCountryDetail } from "../redux/slices/countrySlice";
+import SetMaxBounds from "./SetMaxBounds";
 
-function SetMaxBounds() {
-  const map = useMap()
-
-  useEffect(() => {
-    const southWest = L.latLng(-85, -180);
-    const northEast = L.latLng(85, 180);
-    const bounds = L.latLngBounds(southWest, northEast);
-
-    map.setMaxBounds(bounds);
-
-    map.on('drag', function () {
-      map.panInsideBounds(bounds, { animate: false });
-    });
-
-    return () => {
-      map.off('drag');
-    };
-  }, [map]);
-
-  return null
-}
 
 const MapContent = () => {
   const mapRef = useRef(null);
   const [geoData, setGeoData] = useState(null);
-  const [selectedCountry, setSelectedCountry] = useState(null)
+  const [selectedCountry, setSelectedCountry] = useState(null);
   const countryData = useSelector(state => state.restCountry.infoData);
-  const latitude = 51.505;
-  const longitude = -0.09;
+  const latitude = 55.505;
+  const longitude = 35.09;
 
 
   // mapDetail
   const { infoData } = useSelector((state) => state.country);
-  console.log(infoData)
-  const countries = useSelector((state) => state.restCountry.infoData)
-  const borderCountries = infoData?.borders
-    ? infoData.borders.map(border => {
+  const countries = useSelector((state) => state.restCountry.infoData);
+
+  // borderCountries
+  const [countryWithBorder] = infoData?.filter(data => data.hasOwnProperty('borders')) ?? []
+  const borderCountries = countryWithBorder
+    ? countryWithBorder.borders.map(border => {
       const country = countries.find(country => country.cca3 === border);
-      return country ? country.name?.common : "null";
+      return country ? { flag: country.flags.png, name: country.name.common } : null;
     }).filter(Boolean)
     : [];
 
 
-  //mapContent
+  // mapContent
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -64,7 +44,7 @@ const MapContent = () => {
 
   useEffect(() => {
     dispatch(fetchCountryContent());
-  }, [dispatch])
+  }, [dispatch]);
 
   const getCountryInfo = (countryName) => {
     return countryData?.find(
@@ -81,67 +61,61 @@ const MapContent = () => {
     if (countryInfo) {
       popupContent = renderToString(<PopupContent countryName={countryName} countryInfo={countryInfo} />);
     } else {
-      popupContent += `<p>Məlumat tapilmadi</p>`;
+      popupContent += `<p>Məlumat tapılmadı</p>`;
     }
 
-    // layer.bindPopup(popupContent);
     layer.on({
       click: () => {
-        setSelectedCountry(countryInfo)
-        dispatch(fetchCountryDetail(countryName))
+        dispatch(fetchCountryDetail(countryName));
+        setSelectedCountry(countryInfo);
       },
     });
   };
 
-
   return (
     <div id="map-content-wrapper" className="flex h-screen">
-
-      <div className="map-detail w-1/2 bg-gray-300 p-4">
-        {/* <div className='pl-8 pt-8'>
-          <Link to='/'>
-            <IoExitOutline className='text-3xl cursor-pointer ' />
-          </Link>
-        </div> */}
-
-        {
-          selectedCountry ? (
-            <div className='MapDetail h-full bg-whitesmoke'>
-              <h1 className='font-semibold text-5xl text-center pt-12 pb-16 text-red-500'>{selectedCountry.name?.common}</h1>
-              <div className="country-info flex justify-around items-center gap-10">
-                <p className="text-base flex gap-8 flex-col">
-                  <span className='font-semibold h-full w-full'>
-                    <img className='h-40' src={selectedCountry.flags.png ?? '---'} alt="" />
-                  </span>
-                  <span className='font-semibold w-full'>
-                    <img className='h-52' src={selectedCountry.coatOfArms.png ?? '---'} alt="" />
-                  </span>
-                </p>
-                <div className="countryInfoText w-10/12 border-2 px-5 py-5 grid gap-2.5 rounded-3xl border-green-700">
-                  <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Capital: </span>{selectedCountry.capital ?? '---'}</p>
-                  <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Population: </span>{selectedCountry.population ?? '---'}</p>
-                  <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Area: </span>{selectedCountry.area ?? '---'}</p>
-                  <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Name Official: </span>{selectedCountry.name?.official ?? '---'} </p>
-                  <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Subregion: </span>{selectedCountry.subregion ?? '---'}</p>
-                  <p className="italic text-lg"><span className="font-semibold not-italic text-xl">Border Country: </span>
-                    {borderCountries && borderCountries.length > 0
-                      ? borderCountries.join(', ')
+      {selectedCountry && (
+        <div className="map-detail w-1/2 bg-#e6e6e6 p-4">
+          <div className='MapDetail h-full bg-whitesmoke'>
+            <h1 className='font-semibold text-5xl text-center pt-12 pb-16 text-red-500'>{selectedCountry.name?.common}</h1>
+            <div className="country-info flex justify-around items-center gap-10">
+              <p className="text-base flex gap-8 flex-col">
+                <span className='font-semibold h-full w-full'>
+                  <img className='h-40' src={selectedCountry.flags.png} alt={`${selectedCountry.name?.common}`} />
+                </span>
+                <span className='font-semibold w-full'>
+                  <img className='h-52' src={selectedCountry.coatOfArms.png} alt={`${selectedCountry.name?.common}`} />
+                </span>
+              </p>
+              <div className="countryInfoText w-10/12 border-2 px-5 py-5 grid gap-2.5 rounded-3xl border-green-700">
+                <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Capital: </span>{selectedCountry.capital ?? '---'}</p>
+                <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Population: </span>{selectedCountry.population ?? '---'}</p>
+                <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Area: </span>{selectedCountry.area ?? '---'}</p>
+                <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Name Official: </span>{selectedCountry.name?.official ?? '---'} </p>
+                <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Subregion: </span>{selectedCountry.subregion ?? '---'}</p>
+                <div className="italic text-lg"><span className="font-semibold not-italic text-xl">Border Country: </span>
+                  <div className="borderFlags flex flex-wrap gap-2 mt-2.5">
+                    {borderCountries.length > 0
+                      ? borderCountries.map((country, index) => (
+                        <div key={index} className="flex w-max items-center gap-3 cursor-pointer relative group">
+                          <img className="h-8 w-12" src={country.flag} alt="Border country flag" />
+                          <span className="absolute bottom-full left-0 mb-2 hidden group-hover:block px-3 py-2 rounded-lg text-white bg-black">
+                            {country.name}
+                          </span>
+                        </div>
+                      ))
                       : 'No bordering countries'}
-                  </p>
+                  </div>
                 </div>
               </div>
             </div>
-          ) : (
-            <h1 className='font-semibold text-5xl text-center pt-12 pb-28 text-red-500'>
-
-            </h1>
-          )
-        }
-      </div>
-      <div className="map-container">
+          </div>
+        </div>
+      )}
+      <div className={`${selectedCountry ? 'w-1/2' : 'w-full'}`}>
         <MapContainer
           center={[latitude, longitude]}
-          zoom={2}
+          zoom={5}
           ref={mapRef}
           style={{ height: "100vh", width: "100%" }}
         >
@@ -152,6 +126,5 @@ const MapContent = () => {
     </div>
   );
 };
-
 
 export default MapContent;
