@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchCountryContent } from "../redux/slices/restCountrySlice";
 import { fetchCountryDetail } from "../redux/slices/countrySlice";
 import SetMaxBounds from "./SetMaxBounds";
+import { MdClose } from "react-icons/md";
 
 
 const MapContent = () => {
@@ -72,22 +73,27 @@ const MapContent = () => {
     });
   };
 
+  const onExit = () => {
+    setSelectedCountry(null);
+  };
+
   return (
-    <div id="map-content-wrapper" className="flex h-screen">
+    <div id="map-content-wrapper max-lg:flex-col" className="flex h-screen max-lg:flex-col">
       {selectedCountry && (
-        <div className="map-detail w-1/2 bg-#e6e6e6 p-4">
+        <div className="map-detail w-1/2 bg-#e6e6e6 p-4 max-lg:w-full">
+          <MdClose onClick={onExit} className="hidden cursor-pointer absolute top-2.5	right-2.5 text-3xl max-lg:flex" />
           <div className='MapDetail h-full bg-whitesmoke'>
-            <h1 className='font-semibold text-5xl text-center pt-12 pb-16 text-red-500'>{selectedCountry.name?.common}</h1>
-            <div className="country-info flex justify-around items-center gap-10">
-              <p className="text-base flex gap-8 flex-col">
+            <h1 className='font-semibold text-5xl text-center pt-12 pb-16 text-red-500 max-lg:pb-6 max-lg:pt-5 max-lg:text-4xl'>{selectedCountry.name?.common}</h1>
+            <div className="country-info flex justify-around items-center gap-5 flex-row max-lg:flex-col">
+              <p className="text-base flex gap-8 items-center flex-col max-lg:flex-row ">
                 <span className='font-semibold h-full w-full'>
-                  <img className='h-40' src={selectedCountry.flags.png} alt={`${selectedCountry.name?.common}`} />
+                  <img className='h-40 max-lg:w-40 max-lg:h-32' src={selectedCountry.flags.png} alt={`${selectedCountry.name?.common}`} />
                 </span>
                 <span className='font-semibold w-full'>
-                  <img className='h-52' src={selectedCountry.coatOfArms.png} alt={`${selectedCountry.name?.common}`} />
+                  <img className='h-52 max-lg:w-40 max-lg:h-36' src={selectedCountry.coatOfArms.png} alt={`${selectedCountry.name?.common}`} />
                 </span>
               </p>
-              <div className="countryInfoText w-10/12 border-2 px-5 py-5 grid gap-2.5 rounded-3xl border-green-700">
+              <div className="countryInfoText w-10/12 border-2 px-5 py-5 grid grid-col-1 gap-2.5 rounded-3xl border-green-700 max-lg:w-full max-lg:border-none max-lg:p-0 max-lg:grid-cols-1 max-lg:pb-5 md:grid-cols-2 md:mt-7 lg:grid-cols-1">
                 <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Capital: </span>{selectedCountry.capital ?? '---'}</p>
                 <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Population: </span>{selectedCountry.population ?? '---'}</p>
                 <p className="italic text-lg"><span className='font-semibold not-italic text-xl'>Area: </span>{selectedCountry.area ?? '---'}</p>
@@ -112,7 +118,7 @@ const MapContent = () => {
           </div>
         </div>
       )}
-      <div className={`${selectedCountry ? 'w-1/2' : 'w-full'}`}>
+      <div className={`${selectedCountry ? 'w-1/2 max-lg:hidden' : 'w-full relative'}`}>
         <MapContainer
           center={[latitude, longitude]}
           zoom={5}
