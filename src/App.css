@@ -71,3 +71,19 @@ p {
     overflow-y: auto;
     background-color: #f3f4f6;
 }
+
+
+.fade-out {
+    animation: fadeOut 0.2s forwards;
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+}

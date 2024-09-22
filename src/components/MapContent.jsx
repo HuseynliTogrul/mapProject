@@ -9,12 +9,14 @@ import { fetchCountryContent } from "../redux/slices/restCountrySlice";
 import { fetchCountryDetail } from "../redux/slices/countrySlice";
 import SetMaxBounds from "./SetMaxBounds";
 import { MdClose } from "react-icons/md";
+import { IoExitOutline } from "react-icons/io5";
 
 
 const MapContent = () => {
   const mapRef = useRef(null);
   const [geoData, setGeoData] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
+  const [isClosing, setIsClosing] = useState(false);
   const countryData = useSelector(state => state.restCountry.infoData);
   const latitude = 55.505;
   const longitude = 35.09;
@@ -73,15 +75,20 @@ const MapContent = () => {
     });
   };
 
-  const onExit = () => {
-    setSelectedCountry(null);
+  const onClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      setSelectedCountry(null);
+      setIsClosing(false);
+    }, 300);
   };
 
   return (
     <div id="map-content-wrapper max-lg:flex-col" className="flex h-screen max-lg:flex-col">
       {selectedCountry && (
-        <div className="map-detail w-1/2 bg-#e6e6e6 p-4 max-lg:w-full">
-          <MdClose onClick={onExit} className="hidden cursor-pointer absolute top-2.5	right-2.5 text-3xl max-lg:flex" />
+        <div className={`map-detail w-1/2 bg-gray-200 p-4 max-lg:w-full ${isClosing ? 'fade-out' : ''}`}>
+          <IoExitOutline onClick={onClose} className="cursor-pointer absolute top-2.5	left-2.5 text-3xl max-lg:hidden" />
+          <MdClose onClick={onClose} className="hidden cursor-pointer absolute top-2.5	right-2.5 text-3xl max-lg:flex" />
           <div className='MapDetail h-full bg-whitesmoke'>
             <h1 className='font-semibold text-5xl text-center pt-12 pb-16 text-red-500 max-lg:pb-6 max-lg:pt-5 max-lg:text-4xl'>{selectedCountry.name?.common}</h1>
             <div className="country-info flex justify-around items-center gap-5 flex-row max-lg:flex-col">
