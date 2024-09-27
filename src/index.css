@@ -1,3 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.leaflet-layer,
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out,
+.leaflet-control-attribution {
+    /* filter: brightness(0.6) invert(1) contrast(3) hue-rotate(200deg) saturate(0.3); */
+    filter: none
+}
