@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import BorderContent from "./BorderContent";
 import { MdClose } from "react-icons/md";
 import { IoExitOutline } from "react-icons/io5";
+// import DetailContent from './DetailContent';
+import BorderContent from './BorderContent';
 
-function MapDetail({ infoData, isClosing, setIsClosing }) {
+function MapDetail({ infoData, isClosing, setIsClosing }, e) {
     const [selectedCountry, setSelectedCountry] = useState(null);
 
     useEffect(() => {
@@ -12,6 +13,19 @@ function MapDetail({ infoData, isClosing, setIsClosing }) {
             setSelectedCountry(countryInfo);
         }
     }, [infoData])
+
+    // useEffect(() => {
+    //     const closeOnEscape = (e) => e.key === "Escape" && onClose();
+    //     window.addEventListener("keydown", closeOnEscape);
+    //     return () => window.removeEventListener("keydown", closeOnEscape);
+    // }, []);
+
+    useEffect(() => {
+        const closeOnEscape = (e) => {
+            if (e.key === "Escape") onClose()
+        }
+        window.addEventListener("keydown", closeOnEscape)
+    }, [])
 
     const onClose = () => {
         setIsClosing(true);
@@ -48,6 +62,7 @@ function MapDetail({ infoData, isClosing, setIsClosing }) {
                             </div>
                         </div>
                     </div>
+                    {/* <DetailContent/> */}
                 </div>
             )}
         </>
