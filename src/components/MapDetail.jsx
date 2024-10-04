@@ -14,12 +14,6 @@ function MapDetail({ infoData, isClosing, setIsClosing }, e) {
         }
     }, [infoData])
 
-    // useEffect(() => {
-    //     const closeOnEscape = (e) => e.key === "Escape" && onClose();
-    //     window.addEventListener("keydown", closeOnEscape);
-    //     return () => window.removeEventListener("keydown", closeOnEscape);
-    // }, []);
-
     useEffect(() => {
         const closeOnEscape = (e) => {
             if (e.key === "Escape") onClose()

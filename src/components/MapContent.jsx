@@ -12,8 +12,6 @@ import MapDetail from "./MapDetail";
 import Post from "../../services/post";
 import { useDispatch, useSelector } from "react-redux";
 
-
-
 const MapContent = () => {
   const mapRef = useRef(null);
   const [geoData, setGeoData] = useState(null);
