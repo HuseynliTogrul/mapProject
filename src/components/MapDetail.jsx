@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { MdClose } from "react-icons/md";
 import { IoExitOutline } from "react-icons/io5";
-// import DetailContent from './DetailContent';
 import BorderContent from './BorderContent';
 
 function MapDetail({ infoData, isClosing, setIsClosing }, e) {
@@ -56,7 +55,6 @@ function MapDetail({ infoData, isClosing, setIsClosing }, e) {
                             </div>
                         </div>
                     </div>
-                    {/* <DetailContent/> */}
                 </div>
             )}
         </>
